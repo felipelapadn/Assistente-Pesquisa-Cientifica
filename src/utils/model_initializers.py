@@ -3,7 +3,7 @@ from transformers import pipeline
 from sentence_transformers import SentenceTransformer
 
 def initialize_gpt4o():
-    return ChatOpenAI(model_name="gpt-4o-mini", temperature=0.6)
+    return ChatOpenAI(model_name="gpt-4o-mini", temperature=0.6, streaming=True)
 
 def initialize_summa():
     return pipeline("summarization", model="Falconsai/text_summarization")

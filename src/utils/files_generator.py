@@ -18,10 +18,10 @@ class FileGenerator:
         self.query = query
         self.summa = Summarizer()
     
-    def clean_unicode(self, texto):
+    def clean_unicode(self, texto: str) -> str:
         return unicodedata.normalize('NFKD', texto).encode('latin-1', 'ignore').decode('latin-1')
 
-    def generate_fileds(self, items, keys, abstract_transform=None, mode='dict'):
+    def generate_fileds(self, items: dict, keys: dict, abstract_transform = None, mode: str ='dict') -> list:
         list_infos = list()
         for item in items:
             if mode == 'dict':
@@ -46,7 +46,7 @@ class FileGenerator:
 
         return list_infos
 
-    def repair_abstract(self, inverted_index):
+    def repair_abstract(self, inverted_index: str) -> str:
         if not inverted_index:
             return "Resumo não disponível."
         index_map = {}
@@ -55,14 +55,14 @@ class FileGenerator:
                 index_map[pos] = word
         return ' '.join(index_map[i] for i in sorted(index_map))
         
-    def generate_pdf(self, list_infos):
+    def generate_pdf(self, list_infos: list):
         
         pdf = FPDF()
         pdf.set_auto_page_break(auto=True, margin=15)
         pdf.add_page()
         pdf.set_font("Arial", size=12)
 
-        for i, (title, link, abstract) in enumerate(list_infos, 1):
+        for _, (title, link, abstract) in enumerate(list_infos, 1):
             pdf.set_font("Arial", style="B", size=12)
             pdf.multi_cell(0, 10, f"Ttile: {title}")
             pdf.set_font("Arial", size=12)
@@ -73,7 +73,7 @@ class FileGenerator:
 
         pdf.output(f"src/files/abstracts_{self.tuple_similarity[1]}.pdf")
         
-    def make_request(self):
+    def make_request(self) -> list:
         if self.tuple_similarity[0] == 0:
             fields_semanticscholar = {
                 'title': 'title',

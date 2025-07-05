@@ -26,7 +26,6 @@ class RAG:
         document_chain = create_stuff_documents_chain(self.model, prompt)
         return document_chain, input
     
-    
     def pdf_to_vector(self, data):
         embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
         text_splitter = RecursiveCharacterTextSplitter(chunk_size=5000, chunk_overlap=20)
@@ -36,8 +35,7 @@ class RAG:
 
         return retrieval
         
-        
-    def generate_response(self): 
+    def generate_response(self) -> str: 
         pdf = self.aux.load_pdf(self.name)
         retrieval = self.pdf_to_vector(pdf)
         document_chain, input_ = self.definir_prompt(pdf)

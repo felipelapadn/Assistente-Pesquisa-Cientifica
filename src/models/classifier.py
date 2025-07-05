@@ -11,11 +11,22 @@ class Classificador:
         self.aux = Auxiliar()
         self.llm = initialize_gpt4o()
     
-    def classificar_mensagem(self, frase):
-        prompt = self.aux.load_prompt_json("classificador_contexto.json")
+    def make_classification(self, user_input: str) -> bool:
+        """
+        Realiza a classificacao da entrada do usuario. Retorna True ou False a depender
+        da classificacao.
+
+        Args:
+            user_input (str): entrada do usuario
+
+        Returns:
+            bool: represeta se a classificacao é True (1) ou False (0 ou 2)
+        """
+        prompt = self.aux.load_prompt_json("context_classifier.json")
 
         prompt = ChatPromptTemplate.from_template(prompt["content"])
-        prompt_val = prompt.invoke({"frase": frase})
+        prompt_val = prompt.invoke({"user_input": user_input})
         output = self.llm.invoke(prompt_val)
+        response_bool = StrOutputParser().invoke(output) not in ["0", "2"]
 
-        return StrOutputParser().invoke(output)
+        return response_bool

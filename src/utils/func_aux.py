@@ -4,7 +4,7 @@ from langchain_community.document_loaders import PyMuPDFLoader
 
 
 class Auxiliar:
-    def load_prompt_json(self, name):
+    def load_prompt_json(self, name) -> json:
         
         base_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(base_dir, '..', "prompts", name)
@@ -14,7 +14,7 @@ class Auxiliar:
         
         return prompt_json
     
-    def load_pdf(self, name):
+    def load_pdf(self, name) -> dict:
         
         base_dir = os.path.dirname(os.path.abspath(__file__))
         file_path = os.path.join(base_dir, '..', "files", f"abstracts_{name}.pdf")
