@@ -11,7 +11,7 @@ class Classificador:
         self.aux = Auxiliar()
         self.llm = initialize_gpt4o()
     
-    def make_classification(self, user_input: str) -> bool:
+    def make_classification(self, user_input: str, memory) -> bool:
         """
         Realiza a classificacao da entrada do usuario. Retorna True ou False a depender
         da classificacao.
@@ -25,7 +25,7 @@ class Classificador:
         prompt = self.aux.load_prompt_json("context_classifier.json")
 
         prompt = ChatPromptTemplate.from_template(prompt["content"])
-        prompt_val = prompt.invoke({"user_input": user_input})
+        prompt_val = prompt.invoke({"user_input": user_input, "memory": memory})
         output = self.llm.invoke(prompt_val)
         response_bool = StrOutputParser().invoke(output) not in ["0", "2"]
 

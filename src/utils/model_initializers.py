@@ -1,6 +1,7 @@
 from langchain_openai import ChatOpenAI
 from transformers import pipeline
 from sentence_transformers import SentenceTransformer
+from langchain.callbacks.base import BaseCallbackHandler
 
 def initialize_gpt4o():
     return ChatOpenAI(model_name="gpt-4o-mini", temperature=0.6, streaming=True)

@@ -8,12 +8,17 @@ from src.rag.generate_rag import RAG
 from src.utils.func_aux import Auxiliar
 from src.utils.files_generator import FileGenerator
 from src.utils.model_initializers import initialize_gpt4o
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 class ChatController:
     
     def __init__(self):
         self.aux = Auxiliar()
         self.llm = initialize_gpt4o()
+        self.classi = Classificador()
+        self.flow = MakeFlow()
     
     def improve_input_quality(self, api_name: str, user_input: str, memory) -> str:
         """
@@ -50,39 +55,11 @@ class ChatController:
         """
         prompt = self.aux.load_prompt_json("normal_flow.json")
         prompt = ChatPromptTemplate.from_template(prompt["content"])
-        prompt_val = prompt.invoke({"memory": memory, "user_input": user_input})
-        output = self.llm.invoke(prompt_val)
-
-        return StrOutputParser().invoke(output)
+        
+        chain = prompt | self.llm | StrOutputParser()
+        return chain.astream({"memory": memory, "user_input": user_input})
     
-    def add_to_memory(self, memory, role: str, content: str):
-        """
-        Adiciona mensagens na memoria de acordo com a role.
-
-        Args:
-            memory (ConversationBufferMemory): memoria atualizada da conversa
-            role (str): de quem e a resposta/entrada
-            content (str): resposta/entrada do chat
-
-        Raises:
-            ValueError: Role must be 'user' or 'assistant'
-
-        Returns:
-            ConversationBufferMemory: memoria atualizada
-        """
-        if role == 'user':
-            message_class = HumanMessage
-        elif role == 'assistant':
-            message_class = AIMessage
-        elif role == 'system':
-            message_class = SystemMessage
-        else:
-            raise ValueError("Role must be 'user' or 'assistant'")
-        message = message_class(content=content) 
-        memory.chat_memory.add_message(message)
-        return memory
-    
-    def run(self, memory=None, user_input="") -> tuple:
+    def run(self, memory="", user_input="") -> tuple:
         """
         Funcao que roda as rotinas do chat, incluindo a classificacao da mensagem,
         escolha do flow, geracao de arquivos, RAG e o normal_flow.
@@ -95,37 +72,22 @@ class ChatController:
             (ConversationBufferMemory, str): memoria atualizada e a repsosta da LLM.
         """
         
-        if memory is None:
-            memory = ConversationBufferMemory()
-        
-        memory = self.add_to_memory(memory, "user", user_input)
-        
-        classi = Classificador()
-        response = classi.make_classification(user_input)
+        response = self.classi.make_classification(user_input, memory)
         
         if response:
-            flow = MakeFlow()
-            similarities = flow.make_similarities(user_input)
-            choice_api = flow.return_flow(similarities)
+            similarities = self.flow.make_similarities(user_input)
+            choice_api = self.flow.return_flow(similarities)
             improved_user_input = self.improve_input_quality(choice_api[1], user_input, memory)
-            print(improved_user_input)
             
             if improved_user_input == "0":
-                res = self.normal_flow(memory, user_input)
-                memory = self.add_to_memory(memory, "assistant", res)
-                return memory, res
-            
+                return self.normal_flow(memory, user_input)      
             try:   
                 f = FileGenerator(choice_api, improved_user_input)
                 results = f.make_request()
                 f.generate_pdf(results)
                 r = RAG(choice_api)
-                res = r.generate_response()
+                return r.generate_response()
             except:
-                res = self.normal_flow(memory, user_input)
-    
-            memory = self.add_to_memory(memory, "assistant", res)
-            
-            return memory, res
+                return self.normal_flow(memory, user_input)
         else:
-            return memory, "Não entendi sua pergunta. Poderia repetir?"
+            return "Não entendi sua pergunta. Poderia repetir?"

@@ -11,6 +11,9 @@ from fpdf import FPDF
 import arxiv
 import unicodedata
 from src.models.summarizer import Summarizer
+import logging
+
+logging.basicConfig(level=logging.DEBUG)
 
 class FileGenerator:
     def __init__(self, tuple_similarity, query):
@@ -114,27 +117,5 @@ class FileGenerator:
                 mode='obj'
             )
             
-        elif self.tuple_similarity[0] == 2:
-            
-            url = "https://api.openalex.org/works"
-            params = {
-                "filter": f"title.search:{self.query},open_access.is_oa:true",
-                "per_page": 5
-            }
-
-            response = requests.get(url, params=params).json()
-            
-            fields_openalex = {
-                'title': 'display_name',
-                'link': 'doi',
-                'abstract': 'abstract_inverted_index'
-            }
-
-            results = self.generate_fileds(
-                items=response["results"],
-                keys=fields_openalex,
-                abstract_transform=self.repair_abstract,
-                mode='dict'
-            )
         return results
                     
