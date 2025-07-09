@@ -22,17 +22,16 @@ class ChatController:
     
     def improve_input_quality(self, api_name: str, user_input: str, memory) -> str:
         """
-        Essa funcao é responsavel por melhorar a entrada do usuario.
-        O prompt para realizar esse melhoramento o faz se o usuario querer pesquisar
-        por artigos, caso contrario, retorna 0.
+        Melhora a entrada do usuário com base no contexto da conversa e na API selecionada.
+        Caso a entrada não esteja relacionada à busca por artigos, retorna uma resposta padrão.
 
         Args:
-            api_name (str): o nome da API escolhida
-            user_input (str): entrada do usuario
-            memory (ConversationBufferMemory): memoria atualizada da conversa
+            api_name (str): Nome da API selecionada (ex: "scientific", "news", etc.).
+            user_input (str): Texto fornecido pelo usuário.
+            memory (ConversationBufferMemory): Objeto de memória que armazena o histórico da conversa.
 
         Returns:
-            str: resposta da LLM
+            str: Entrada do usuário aprimorada ou resposta padrão, gerada pela LLM.
         """
         prompt = self.aux.load_prompt_json("improve_input_quality.json")
         prompt = ChatPromptTemplate.from_template(prompt["content"])
@@ -43,15 +42,14 @@ class ChatController:
     
     def normal_flow(self, memory, user_input: str) -> str:
         """
-        A funcao aplica o normal_flow, um flow generico apenas para resposnder duvidas
-        do usuário.
+        Aplica o fluxo genérico de resposta para dúvidas do usuário, utilizando o contexto da conversa.
 
         Args:
-            memory (ConversationBufferMemory): memoria atualizada da conversa
-            user_input (str): entrada do usuario
+            memory (ConversationBufferMemory): Objeto de memória com o histórico da conversa.
+            user_input (str): Entrada textual fornecida pelo usuário.
 
         Returns:
-            str: resposta da LLM
+            str: Resposta gerada pela LLM com base na entrada do usuário e na memória da conversa.
         """
         prompt = self.aux.load_prompt_json("normal_flow.json")
         prompt = ChatPromptTemplate.from_template(prompt["content"])
@@ -59,17 +57,17 @@ class ChatController:
         chain = prompt | self.llm | StrOutputParser()
         return chain.astream({"memory": memory, "user_input": user_input})
     
-    def run(self, memory="", user_input="") -> tuple:
+    def run(self, memory="", user_input="") -> str:
         """
-        Funcao que roda as rotinas do chat, incluindo a classificacao da mensagem,
-        escolha do flow, geracao de arquivos, RAG e o normal_flow.
+        Executa as rotinas principais do chat, incluindo classificação da mensagem, 
+        escolha do fluxo apropriado, geração de arquivos, execução do RAG e fallback para o fluxo normal.
 
         Args:
-            memory (ConversationBufferMemory, optional): memoria atualizada. Defaults to None.
-            user_input (str, optional): entrada do usuario. Defaults to "".
+            memory (ConversationBufferMemory, optional): Objeto de memória com o histórico da conversa. Defaults to None.
+            user_input (str, optional): Entrada textual fornecida pelo usuário. Defaults to "".
 
         Returns:
-            (ConversationBufferMemory, str): memoria atualizada e a repsosta da LLM.
+            str: Resposta gerada pela LLM.
         """
         
         response = self.classi.make_classification(user_input, memory)

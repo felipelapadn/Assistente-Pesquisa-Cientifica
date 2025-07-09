@@ -12,13 +12,13 @@ class MakeFlow:
         
     def make_similarities(self, user_input: str):
         """
-        Funcao que faz a similaridade com emabeddings.
+        Calcula a similaridade entre embeddings com base na entrada do usuário.
 
         Args:
-            user_input (str): entrada do usuario
+            user_input (str): Entrada textual fornecida pelo usuário.
 
         Returns:
-            matriz: matriz de similariade
+            np.ndarray: Matriz de similaridade entre os embeddings.
         """
         
         embeddings = self.model.encode(user_input)
@@ -26,16 +26,16 @@ class MakeFlow:
         similaridades = self.model.similarity(embeddings, embedding_comparar)
         return similaridades
 
-    def return_flow(self, similaridades):
+    def return_flow(self, similarities) -> tuple[int, str]:
         """
-        Escolhe a API com maior similaridade.
+        Escolhe a API com maior valor de similaridade na matriz fornecida.
 
         Args:
-            similaridades (_type_): matriz de similridades.
+            similarities (np.ndarray): Matriz de similaridades entre a entrada do usuário e as APIs disponíveis.
 
         Returns:
-            (idx, name): tupla com o index escolhido e o nome da API
+            tuple[int, str]: Índice da API escolhida e seu respectivo nome.
         """
-        _, idx = torch.max(similaridades, dim=1)
+        _, idx = torch.max(similarities, dim=1)
         return (idx.item(), self.names[idx])
         

@@ -13,14 +13,14 @@ class Classificador:
     
     def make_classification(self, user_input: str, memory) -> bool:
         """
-        Realiza a classificacao da entrada do usuario. Retorna True ou False a depender
-        da classificacao.
+        Classifica a entrada do usuário e retorna um valor booleano com base na categoria atribuída.
 
         Args:
-            user_input (str): entrada do usuario
+            user_input (str): Entrada textual fornecida pelo usuário.
 
         Returns:
-            bool: represeta se a classificacao é True (1) ou False (0 ou 2)
+            bool: True se a entrada for classificada como relevante (classe 1), 
+                False caso contrário (classe 0 ou 2).
         """
         prompt = self.aux.load_prompt_json("context_classifier.json")
 

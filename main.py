@@ -7,12 +7,21 @@ from time import sleep
 chat = ChatController()
 
 def stream_callback_std():
+    """
+    Gera tokens simulando uma resposta padrão, emitindo um token por vez com atraso.
+
+    Yields:
+        str: Token da resposta gerada.
+    """
     for token in ["Não ", "entendi ", "sua ", "pergunta. ", "Poderia ", "repetir", "?"]:
         yield token
         sleep(0.05)
 
 def app():
-    file_path = "icon.png"
+    """
+    Função principal que renderiza a interface da aplicação usando Streamlit.
+    """
+    file_path = "imagens/icon.png"
     
     with open(file_path, "rb") as img_file:
         img_bytes = img_file.read()

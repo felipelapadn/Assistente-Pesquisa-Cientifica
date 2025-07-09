@@ -18,16 +18,16 @@ class Summarizer:
     def make_summarization(self, src_text: str, max_length: int = 200,
                            min_length: int = 30, do_sample: bool = False) -> str:
         """
-        Realiza a sumarização de um texto.
+        Realiza a sumarização de um texto fornecido.
 
         Args:
-            src_text (str): texto a ser sumarizado
-            max_length (int, optional): tamanho maximo da sumarizacao. Defaults to 200.
-            min_length (int, optional): tamanho minimo da sumarizacao. Defaults to 30.
-            do_sample (bool, optional): _description_. Defaults to False.
+            src_text (str): Texto original a ser sumarizado.
+            max_length (int, optional): Tamanho máximo do resumo gerado. Defaults to 200.
+            min_length (int, optional): Tamanho mínimo do resumo gerado. Defaults to 30.
+            do_sample (bool, optional): Se deve usar amostragem na geração do resumo. Defaults to False.
 
         Returns:
-            str: texto sumarizado
+            str: Texto sumarizado resultante.
         """
         text_to_summa = src_text[:max_length]
         result = self.model(

@@ -12,6 +12,7 @@ import arxiv
 import unicodedata
 from src.models.summarizer import Summarizer
 import logging
+from typing import Optional, Callable, List, Tuple, Dict, Any
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -22,9 +23,35 @@ class FileGenerator:
         self.summa = Summarizer()
     
     def clean_unicode(self, texto: str) -> str:
+        """
+        Remove acentuação e caracteres Unicode especiais do texto, 
+        normalizando para o padrão Latin-1.
+
+        Args:
+            texto (str): Texto original que pode conter caracteres Unicode.
+
+        Returns:
+            str: Texto normalizado sem acentuação e caracteres especiais.
+        """
         return unicodedata.normalize('NFKD', texto).encode('latin-1', 'ignore').decode('latin-1')
 
-    def generate_fileds(self, items: dict, keys: dict, abstract_transform = None, mode: str ='dict') -> list:
+    def generate_fields(
+        self, items: Dict[str, Any], keys: Dict[str, str],
+        abstract_transform: Optional[Callable[[str], str]] = None,
+        mode: str = 'dict'
+    ) -> List[Tuple[str, str, str]]:
+        """
+        Gera uma lista de tuplas contendo título, link e resumo sumarizado de artigos retornados pelas APIs.
+
+        Args:
+            items (Dict[str, Any]): Dados brutos dos artigos retornados pelas APIs.
+            keys (Dict[str, str]): Mapeamento das chaves para acessar título, link e resumo nos dados dos artigos.
+            abstract_transform (Callable[[str], str], optional): Função para transformar ou sumarizar o resumo. Defaults to None.
+            mode (str, optional): Modo de saída, atualmente só suporta 'dict'. Defaults to 'dict'.
+
+        Returns:
+            List[Tuple[str, str, str]]: Lista de tuplas com (título, link, resumo sumarizado).
+        """
         list_infos = list()
         for item in items:
             if mode == 'dict':
@@ -50,6 +77,15 @@ class FileGenerator:
         return list_infos
 
     def repair_abstract(self, inverted_index: str) -> str:
+        """
+        Junta partes de texto fragmentadas de um retorno de API em uma única string.
+
+        Args:
+            inverted_index (str): Texto fragmentado (abstract) a ser concatenado.
+
+        Returns:
+            str: Texto completo resultante da junção das partes.
+        """
         if not inverted_index:
             return "Resumo não disponível."
         index_map = {}
@@ -59,7 +95,16 @@ class FileGenerator:
         return ' '.join(index_map[i] for i in sorted(index_map))
         
     def generate_pdf(self, list_infos: list):
-        
+        """
+        Gera e salva PDFs na pasta "src/files/" com o nome no formato "abstracts_<nome_da_api>.pdf".
+
+        Args:
+            list_infos (List[Tuple[str, str, str]]): Lista de tuplas contendo informações dos artigos 
+                (título, link, resumo sumarizado).
+
+        Returns:
+            None
+        """
         pdf = FPDF()
         pdf.set_auto_page_break(auto=True, margin=15)
         pdf.add_page()
@@ -77,6 +122,12 @@ class FileGenerator:
         pdf.output(f"src/files/abstracts_{self.tuple_similarity[1]}.pdf")
         
     def make_request(self) -> list:
+        """
+        Realiza uma requisição HTTP e retorna os dados obtidos.
+
+        Returns:
+            list: Lista com os dados retornados pela requisição.
+        """
         if self.tuple_similarity[0] == 0:
             fields_semanticscholar = {
                 'title': 'title',
@@ -93,7 +144,7 @@ class FileGenerator:
 
             response = requests.get(url, params=params).json()
 
-            results = self.generate_fileds(
+            results = self.generate_fields(
                 items=response['data'],
                 keys=fields_semanticscholar,
                 mode='dict'
@@ -111,7 +162,7 @@ class FileGenerator:
                 sort_by=arxiv.SortCriterion.SubmittedDate,   
             )
 
-            results = self.generate_fileds(
+            results = self.generate_fields(
                 items=search.results(),
                 keys=fields_arxiv,
                 mode='obj'
