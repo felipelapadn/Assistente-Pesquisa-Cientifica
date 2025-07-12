@@ -1,6 +1,7 @@
 # Assistente de Pesquisa Científica com RAG
 
-
+O projeto surgiu da ideia de me ajudar a descobrir novas técnicas para aplicar nos meus projetos e também explorar assuntos que são tendência no mundo da computação acadêmica. O Assistente de Pesquisa foi criado justamente para cobrir algumas limitações que ferramentas como o ChatGPT ainda apresentam, especialmente no que diz respeito à confiabilidade das informações geradas.
+Muitas vezes, ao pesquisar por tópicos e artigos no ChatGPT, os links não eram apresentados, e quando apareciam, alguns estavam quebrados ou nem sequer existiam. A proposta do Assistente de Pesquisa é justamente oferecer informações confiáveis, utilizando a abordagem RAG (Retrieval-Augmented Generation) e fazendo buscas diretas em APIs de bases científicas como a ArXiv e o Semantic Scholar.
 
 ## Estrutura de pastas resumida
 
@@ -32,6 +33,15 @@ project-root/
 - **Streaming de respostas:** entrega resposta token a token para melhor UX.
 - **Interface com Streamlit:** aplicação web leve para interação com o usuário.
 
+## Como clonar o projeto
+
+Para clonar este repositório, use o comando:
+
+```bash
+git clone https://github.com/felipelapadn/Assistente-Pesquisa-Cientifica.git
+cd Assistente-Pesquisa-Cientifica
+```
+
 ## Requisitos
 
 #### Importante: se atentar ao arquivo `.env.exemplo` para definir as variáveis de ambiente.
@@ -48,15 +58,6 @@ Instale as dependências com:
 
 ```bash
 pip install -r requirements.txt
-```
-
-## Como clonar o projeto
-
-Para clonar este repositório, use o comando:
-
-```bash
-git clone https://github.com/felipelapadn/Assistente-Pesquisa-Cientifica.git
-cd Assistente-Pesquisa-Cientifica
 ```
 
 ## Como usar
@@ -98,8 +99,7 @@ make run
 
 ### 3. Acessar o Streamlit dentro do docker
 
-Para acessar, clique no link como indicado abaixo.
-![alt text](<imagens/link_streamlit.png>)
+Para acessar: `http://localhost:8080/`
 
 ### 4. Parar e remover o container (se executado em modo background)
 
@@ -116,7 +116,9 @@ Ou via Makefile:
 make clean
 ```
 
-3. Interaja com a interface para pesquisar artigos, obter resumos e respostas geradas pelo modelo.
+### 5. Interaja com a interface para pesquisar artigos, obter resumos e respostas geradas pelo modelo.
+
+![alt text](imagens/exemplo.png)
 
 ## Autor
 
