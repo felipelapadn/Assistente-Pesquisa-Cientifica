@@ -24,7 +24,7 @@ class Classificador:
         """
         prompt = self.aux.load_prompt("context_classifier.md")
 
-        prompt = ChatPromptTemplate.from_template(prompt["content"])
+        prompt = ChatPromptTemplate.from_template(prompt)
         prompt_val = prompt.invoke({"user_input": user_input, "memory": memory})
         output = self.llm.invoke(prompt_val)
         response_bool = StrOutputParser().invoke(output) not in ["0", "2"]

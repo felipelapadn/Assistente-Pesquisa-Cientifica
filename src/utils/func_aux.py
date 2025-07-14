@@ -26,7 +26,11 @@ class Auxiliar:
                 return json.load(f)
         elif name.endswith('.md'):
             with open(file_path, 'r', encoding='utf-8') as f:
-                return f.read()
+                file = f.read()
+            if isinstance(file, bytes):
+                return file.decode("utf-8")
+            else:
+                return file
         else:
             raise ValueError("Formato de arquivo não suportado. Use '.json' ou '.md'.")
         

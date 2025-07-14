@@ -34,7 +34,7 @@ class ChatController:
             str: Entrada do usuário aprimorada ou resposta padrão, gerada pela LLM.
         """
         prompt = self.aux.load_prompt("improve_input_quality.md")
-        prompt = ChatPromptTemplate.from_template(prompt["content"])
+        prompt = ChatPromptTemplate.from_template(prompt)
         prompt_val = prompt.invoke({"api": api_name, "memory": memory, "user_input": user_input})
         output = self.llm.invoke(prompt_val)
 
@@ -52,7 +52,7 @@ class ChatController:
             str: Resposta gerada pela LLM com base na entrada do usuário e na memória da conversa.
         """
         prompt = self.aux.load_prompt("normal_flow.md")
-        prompt = ChatPromptTemplate.from_template(prompt["content"])
+        prompt = ChatPromptTemplate.from_template(prompt)
         
         chain = prompt | self.llm | StrOutputParser()
         return chain.astream({"memory": memory, "user_input": user_input})
