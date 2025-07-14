@@ -30,7 +30,7 @@ class RAG:
                 {context} 
                 {input}
                 """)
-        input = self.aux.load_prompt_json("rag.json")["content"].format(pdf=pdf)
+        input = self.aux.load_prompt("rag.md")["content"].format(pdf=pdf)
         document_chain = create_stuff_documents_chain(llm=streaming_model, prompt=prompt)
         return document_chain, input
     

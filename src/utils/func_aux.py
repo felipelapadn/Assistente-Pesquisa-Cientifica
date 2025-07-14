@@ -4,25 +4,32 @@ from langchain_community.document_loaders import PyMuPDFLoader
 from typing import Dict
 
 class Auxiliar:
-    def load_prompt_json(self, name: str) -> Dict:
+    def load_prompt(self, name: str):
         """
-        Carrega um arquivo JSON de prompt a partir da pasta 'prompts'.
+        Carrega um arquivo de prompt (.json ou .md) da pasta 'prompts'.
 
         Args:
-            name (str): Nome do arquivo JSON do prompt.
+            name (str): Nome do arquivo de prompt (ex: 'meu_prompt.json' ou 'meu_prompt.md').
 
         Returns:
-            Dict: Conteúdo do arquivo JSON carregado.
+            Union[dict, str]: Conteúdo do arquivo. Um dicionário se for JSON, ou uma string se for Markdown.
         """
-            
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        file_path = os.path.join(base_dir, '..', "prompts", name)
+        file_path = os.path.join(base_dir, '..', 'prompts', name)
         file_path = os.path.normpath(file_path)
-        with open(file_path, 'r', encoding='utf-8') as f:
-            prompt_json = json.load(f)
+
+        if not os.path.exists(file_path):
+            raise FileNotFoundError(f"Arquivo '{file_path}' não encontrado.")
+
+        if name.endswith('.json'):
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        elif name.endswith('.md'):
+            with open(file_path, 'r', encoding='utf-8') as f:
+                return f.read()
+        else:
+            raise ValueError("Formato de arquivo não suportado. Use '.json' ou '.md'.")
         
-        return prompt_json
-    
     def load_pdf(self, name) -> dict:
         """
         Carrega o conteúdo de um PDF localizado na pasta 'files' com prefixo 'abstracts_'.

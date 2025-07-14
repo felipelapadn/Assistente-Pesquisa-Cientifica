@@ -6,7 +6,7 @@ class MakeFlow:
     def __init__(self):
         self.model = initialize_minilm()
         aux = Auxiliar()
-        api_definition = aux.load_prompt_json("api_definitions.json")
+        api_definition = aux.load_prompt("api_definitions.json")
         self.definition = [definition for definition in api_definition.values()]
         self.names = [names for names in api_definition]
         

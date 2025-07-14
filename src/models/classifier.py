@@ -22,7 +22,7 @@ class Classificador:
             bool: True se a entrada for classificada como relevante (classe 1), 
                 False caso contrário (classe 0 ou 2).
         """
-        prompt = self.aux.load_prompt_json("context_classifier.json")
+        prompt = self.aux.load_prompt("context_classifier.md")
 
         prompt = ChatPromptTemplate.from_template(prompt["content"])
         prompt_val = prompt.invoke({"user_input": user_input, "memory": memory})
