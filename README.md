@@ -8,17 +8,20 @@ Muitas vezes, ao pesquisar por tópicos e artigos no ChatGPT, os links não eram
 ```
 project-root/
 │
+├── docs/  # documentação/relatório do projeto
+│   └── .pdf  
 ├── notebooks/  # notebooks que foram usados para investigação
 │   └── .ipynb  
 ├── src/
-│   ├── chat/   # controller do chat
+│   ├── api/    # api do agente
+|   ├── chat/   # controller do chat
 │   ├── files/  # arquivos gerados para o RAG
 │   ├── flow/   # decisão de qual API deve ser escolhida
 │   ├── models/     # modelos feitos para classificar e sumarizar
 │   ├── prompts/    # prompts utilizados
 │   ├── rag/    # funções para realizar o RAG
 │   └── utils/  # funções auxiliares 
-└── main.py # tela com o streamlit
+└── main.py 
 ```
 
 ## Funcionalidades principais
@@ -44,81 +47,37 @@ cd Assistente-Pesquisa-Cientifica
 
 ## Requisitos
 
-#### Importante: se atentar ao arquivo `.env.exemplo` para definir as variáveis de ambiente.
-- Python 3.12+
-- Bibliotecas principais:
-  - `transformers`
-  - `sentence-transformers`
-  - `PyMuPDF`
-  - `faiss`
-  - `streamlit`
-  - `langchain`
-
-Instale as dependências com:
-
-```bash
-pip install -r requirements.txt
-```
+#### Importante: se atentar ao arquivo `.env.exemplo` da pasta `envs` para definir as variáveis de ambiente.
 
 ## Como usar
 
-### Localmente, depois de instalar as dependências:
+### Suba a API (build e up)
 
 ```bash
-streamlit run main.py
+docker compose build
 ```
 
-### Com docker:
-### 1. Build da imagem Docker
-
-Se preferir rodar manualmente:
+> Caso queira subir novamente sem o cache:
+> ```bash
+> docker compose build --no-cache
+> ```
 
 ```bash
-docker build -t nome-da-imagem .
+docker compose up
 ```
 
-Ou usando o Makefile:
+Após o up, acesse: `http://localhost:8110`
 
+### Teste a requisição com o exemplo
+
+No terminal, após subir a API:
 ```bash
-make docker
+python tests/exemplo_req.py
 ```
 
-### 2. Executar o container
+## Documentação do Projeto
 
-Manual:
-
-```bash
-docker run -it nome-do-container
-```
-
-Ou via Makefile:
-
-```bash
-make run
-```
-
-### 3. Acessar o Streamlit dentro do docker
-
-Para acessar: `http://localhost:8080/`
-
-### 4. Parar e remover o container (se executado em modo background)
-
-Manual:
-
-```bash
-docker stop nome-do-container
-docker rm nome-do-container
-```
-
-Ou via Makefile:
-
-```bash
-make clean
-```
-
-### 5. Interaja com a interface para pesquisar artigos, obter resumos e respostas geradas pelo modelo.
-
-![alt text](imagens/exemplo.png)
+Caso queira conferir mais sobre o projeto, acesse a pasta `docs`. 
 
 ## Autor
 

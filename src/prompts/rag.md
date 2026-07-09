@@ -9,4 +9,4 @@ Logo em seguida, depois da mensagem inicial, deve-se seguir as informações dos
 3. **Link**: Forneça o link direto para o artigo conforme disponível.
 
 Analise o PDF {pdf}. Para cada artigo identificado, apresente o título, o resumo e o link conforme o formato descrito.
-IMPORTANTE: certifique-se de que a mensagem contenha apenas uma informação por parágrafo.
+IMPORTANTE: certifique-se de que a mensagem contenha apenas uma informação por parágrafo e pule linhas a cada novo tópico.

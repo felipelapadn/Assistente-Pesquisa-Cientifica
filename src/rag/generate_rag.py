@@ -67,12 +67,10 @@ class RAG:
             pdf = self.aux.load_pdf("arxiv")
             retriever = self.pdf_to_vector(pdf)
 
-        streaming_model = ChatOpenAI(model="gpt-4o", temperature=0)
+        streaming_model = ChatOpenAI(model="gpt-4o-mini", temperature=0)
         document_chain, input_ = self.definir_prompt(pdf, streaming_model)
         retrieval_chain = create_retrieval_chain(retriever, document_chain)
         
-        async for chunk in retrieval_chain.astream({"input": input_}):
-            if "answer" in chunk:
-                yield chunk["answer"]
+        return retrieval_chain.invoke({"input": input_})
             
 

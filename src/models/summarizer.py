@@ -1,13 +1,10 @@
 from src.utils.model_initializers import initialize_summa
-import tensorflow as tf
 import logging
 from dotenv import load_dotenv
 import warnings
 
 warnings.filterwarnings('ignore')
-tf.get_logger().setLevel('ERROR')
 logging.basicConfig(level=logging.CRITICAL)
-# logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
 load_dotenv()
 

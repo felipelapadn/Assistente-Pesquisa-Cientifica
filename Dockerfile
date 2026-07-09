@@ -1,10 +1,17 @@
 FROM python:3.12-slim
+
 WORKDIR /app
-COPY . .
-RUN apt-get update && apt-get install -y build-essential \
+
+RUN apt-get update && apt-get install -y build-essential git \
  && rm -rf /var/lib/apt/lists/*
-RUN pip install --no-cache-dir --ignore-installed -r requirements.txt
 
-EXPOSE 8080
+COPY requirements.txt .
 
-CMD ["streamlit", "run", "main.py", "--server.port=8080", "--server.address=0.0.0.0"]
+RUN pip install torch==2.7.1 --index-url https://download.pytorch.org/whl/cpu
+RUN pip install --default-timeout=1000 --no-cache-dir -r requirements.txt
+
+COPY . .
+
+EXPOSE 8110
+
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8110"]
